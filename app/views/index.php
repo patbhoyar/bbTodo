@@ -11,7 +11,7 @@
         <h1>ToDo App using Backbone</h1>
 
         <form id="addTaskForm">
-            <input type="text" id="newTaskInput" class="span3" placeholder="Enter new Task..." autofocus/>
+            <input type="text" id="newTaskInput" class="span5" placeholder="Enter new Task..." autofocus/>
         </form>
         
         <div id="tasks">
@@ -21,6 +21,14 @@
         </div>
     </div>
     
+    <br><br><br>
+    
+    <div class="container" id="optionsContainer">
+        <div class="span3"></div>
+        <div class="btn-group text-center span6" id="option">
+        </div>
+        <div class="span3"></div>
+    </div>
 
     <script src="scripts/underscore.js"></script>
     <script src="scripts/jquery.js"></script>

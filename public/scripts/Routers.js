@@ -1,10 +1,26 @@
 App.Router = Backbone.Router.extend({
     routes: {
-        '': 'home',
-        'task/:id': 'getTask'
+        '': 'getTaskList',
+        'taskList/:category': 'getTaskList'
     },
     
-    getTask: function(id) {
-        console.log("triggering: get Task "+ id);
+    getTaskList: function(category) {
+        category = category || 'all';
+        
+        var intCategory;
+        if (category === 'completed')
+            intCategory = 1;
+        else if (category === 'incomplete')
+            intCategory = 0;
+        else
+            intCategory = '';
+        
+        var tasks = new App.Collections.Tasks();
+        tasks.url = 'todo/'+intCategory;
+        tasks.fetch().then(function (){
+            new App.Views.AppView({ collection: tasks });
+        });
+        
+        console.log("triggering: get Task List "+ category);
     }
 });

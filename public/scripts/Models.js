@@ -4,3 +4,5 @@ App.Models.Tasks = Backbone.Model.extend({
        completed: ''
    }
 });
+
+App.Models.Categories = Backbone.Model.extend({ });

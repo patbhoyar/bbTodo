@@ -3,8 +3,48 @@ App.Views.AppView = Backbone.View.extend({
         var taskView = new App.Views.Tasks({ collection: this.collection });
         $('#tasks').html(taskView.render().el);
         var x = new App.Views.TaskInput({ collection: this.collection });
+        
+        var categories = new App.Collections.Categories([{'name': 'All', 'alias': 'all'}, {'name': 'Completed', 'alias': 'completed'}, {'name': 'Incomplete', 'alias': 'incomplete'}]);
+        var taskCategories = new App.Views.TaskCategories({ collection: categories });
+        //$("#categories").html(taskCategories.render().el);
+        taskCategories.render().el;
+    }
+});
+
+App.Views.TaskCategories = Backbone.View.extend({
+    el: '.btn-group',
+            
+    initialize: function() {
+      this.$el.html("");  
     },
-    
+            
+    render: function() {
+        this.collection.each(this.addOne, this);
+        return this;
+    },
+            
+    addOne: function(model) {
+        var category = new App.Views.TaskCategory({ model: model });
+        this.$el.append(category.render().el);
+    }
+});
+
+App.Views.TaskCategory = Backbone.View.extend({
+    className: 'btn',
+            
+    render: function() {
+        this.$el.text(this.model.get('name'));
+        return this;
+    },
+            
+    events: {
+        click: 'categorySelected'
+    },
+            
+    categorySelected: function() {
+        appRouter.navigate('taskList/'+this.model.get('alias'), { trigger: true });
+        console.log(this.model.get('alias'));
+    }
 });
 
 App.Views.Tasks = Backbone.View.extend({
@@ -27,7 +67,7 @@ App.Views.Tasks = Backbone.View.extend({
 
 App.Views.Task = Backbone.View.extend({
     tagName: 'li',
-    className: 'taskItem span3' ,       
+    className: 'taskItem span5' ,       
     template: window.template('tasksTemplate'),
     
     initialize: function() {
@@ -46,8 +86,10 @@ App.Views.Task = Backbone.View.extend({
         
         var status;
         
-        if (this.model.get('completed') == 1)
+        if (this.model.get('completed') == 1){
             status = "<div class='icon-star check'></div>";
+            this.$el.attr('class', 'taskItem span5 strikethrough');
+        }
         else
             status = "<div class='icon-star-empty check'></div>";
         
@@ -73,15 +115,18 @@ App.Views.Task = Backbone.View.extend({
     },
             
     completeTask: function() {
+        console.log(this.$el.attr('class'));
         var completed = this.$('.check').attr('class') === "icon-star-empty check"?0:1;
         if(completed){
             this.model.set('completed', false);
             this.model.save();
             this.$('.check').attr('class', 'icon-star-empty check');
+            this.$el.attr('class', 'taskItem span5');
         }else{
             this.model.set('completed', true);
             this.model.save();
             this.$('.check').attr('class', 'icon-star check');
+            this.$el.attr('class', 'taskItem span5 strikethrough');
         }
     }
     

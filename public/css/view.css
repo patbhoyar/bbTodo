@@ -34,3 +34,5 @@ ul{
     right: 30px;
     top: 12px;
 }
+
+.strikethrough{ text-decoration: line-through; }
