@@ -6,20 +6,10 @@
     <link rel="stylesheet" type="text/css" href="css/view.css"/>
 </head>
 <body>
-    
-    <div class="container" id="optionsContainer">
-        <div class="span12">
-            <h1>ToDo App using Backbone</h1>
-        </div>
-        <br><br>
-        <div class="btn-group text-center span6" id="option">
-        </div>
-        <div class="span6"></div>
-    </div>
-    
-    <br>
 
     <div class="container">
+        <h1>ToDo App using Backbone</h1>
+
         <form id="addTaskForm">
             <input type="text" id="newTaskInput" class="span5" placeholder="Enter new Task..." autofocus/>
         </form>
@@ -29,6 +19,15 @@
                 <%= taskName %>  <div class='icon-remove delete'></div> 
             </script>
         </div>
+    </div>
+    
+    <br><br><br>
+    
+    <div class="container" id="optionsContainer">
+        <div class="span3"></div>
+        <div class="btn-group text-center span6" id="option">
+        </div>
+        <div class="span3"></div>
     </div>
 
     <script src="scripts/underscore.js"></script>

@@ -150,9 +150,7 @@ App.Views.TaskInput = Backbone.View.extend({
         
         if(e.keyCode === 13){
             e.preventDefault();
-            var newModel = new App.Models.Tasks();
-            newModel.save(this.readTask());
-            this.collection.add(newModel);
+            this.collection.create(this.readTask());
             this.$("#newTaskInput").val('')
         }
         

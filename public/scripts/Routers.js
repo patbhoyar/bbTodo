@@ -13,12 +13,11 @@ App.Router = Backbone.Router.extend({
         else if (category === 'incomplete')
             intCategory = 0;
         else
-            intCategory = 'all';
+            intCategory = '';
         
         var tasks = new App.Collections.Tasks();
         tasks.url = 'todo/'+intCategory;
         tasks.fetch().then(function (){
-            //tasks.url = 'todo';
             new App.Views.AppView({ collection: tasks });
         });
         
