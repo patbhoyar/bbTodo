@@ -12,6 +12,9 @@
 */
 
 Route::resource('todo', 'TodoController');
+Route::POST('todo/create', 'TodoController@store');
+Route::PUT('todo/update/{id}', 'TodoController@update');
+Route::DELETE('todo/delete/{id}', 'TodoController@destroy');
 
 Route::get('/', function()
 {

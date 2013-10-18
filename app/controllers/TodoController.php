@@ -44,7 +44,10 @@ class TodoController extends \BaseController {
 	 */
 	public function show($id)
 	{
-            return Todo::where('completed', '=', $id)->get();
+            if($id == '1' || $id == '0')
+                return Todo::where('completed', '=', $id)->get();
+            else
+                return Todo::all();
 	}
 
 	/**
