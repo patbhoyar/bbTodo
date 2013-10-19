@@ -1,7 +1,8 @@
 App.Views.AppView = Backbone.View.extend({
     initialize: function() {
         new App.Views.TaskInput();
-        
+        new App.Views.Refresh;
+        selectedCategory = '';
         tasks = new App.Collections.Tasks();
         var categories = new App.Collections.Categories([{'name': 'All', 'alias': 'all'}, {'name': 'Completed', 'alias': 'completed'}, {'name': 'Incomplete', 'alias': 'incomplete'}]);
         var taskCategories = new App.Views.TaskCategories({ collection: categories });
@@ -12,6 +13,7 @@ App.Views.AppView = Backbone.View.extend({
     },
             
     viewForCategory: function(cat) {
+        selectedCategory = cat
         $("#newTaskInput").focus();
         
         if (cat === 'completed'){
@@ -21,6 +23,7 @@ App.Views.AppView = Backbone.View.extend({
                 $('#tasks').html(taskView.render().el);
             });
         }else if (cat === 'incomplete'){
+            console.log("sdsdsqqq");
             tasks.url = 'todo/0';
             tasks.fetch().then(function (){
                 var taskView = new App.Views.Tasks({ collection: tasks });
@@ -37,7 +40,7 @@ App.Views.AppView = Backbone.View.extend({
             
     addModel: function(newModel) {
         tasks.create(newModel);
-        appRouter.navigate('taskList/incomplete', { trigger: true });
+        //appRouter.navigate('taskList/incomplete', { trigger: true });
     }
 });
 
@@ -121,11 +124,24 @@ App.Views.Task = Backbone.View.extend({
             this.model.save();
             this.$('.check').attr('class', 'icon-star check');
             this.$el.attr('class', 'taskItem span5 strikethrough');
-            
-        //appRouter.navigate('taskList/incomplete', { trigger: true });
         }
     }
     
+});
+
+App.Views.Refresh = Backbone.View.extend({
+    el:'#refresh',
+            
+    events: {
+        click: 'refreshView'
+    },
+    
+    refreshView: function() {
+        //appRouter.navigate(Backbone.history.fragment, { trigger: true });
+        //vent.trigger('view:rerender');
+        vent.trigger('category:selected', selectedCategory);
+        console.log(selectedCategory);
+    }        
 });
 
 App.Views.TaskCategories = Backbone.View.extend({

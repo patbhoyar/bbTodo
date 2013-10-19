@@ -12,8 +12,8 @@
 
         <form id="addTaskForm">
             <input type="text" id="newTaskInput" class="span5" placeholder="Enter new Task..." autofocus/>
+            <div class="btn" id="refresh"><i class="icon-refresh"></i></div>
         </form>
-        
         <div id="tasks">
             <script id="tasksTemplate" type="text/template">
                 <%= taskName %>  <div class='icon-remove delete'></div> 
