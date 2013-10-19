@@ -9,17 +9,11 @@ App.Router = Backbone.Router.extend({
         
         var intCategory;
         if (category === 'completed')
-            intCategory = '/1';
+            intCategory = '1';
         else if (category === 'incomplete')
-            intCategory = '/0';
-        else
-            intCategory = '';
+            intCategory = '0';
         
-        var tasks = new App.Collections.Tasks();
-        tasks.url = 'todo'+intCategory;
-        tasks.fetch().then(function (){
-            new App.Views.AppView({ collection: tasks });
-        });
+        vent.trigger('category:selected', category);
         
         console.log("triggering: get Task List "+ category);
     }

@@ -1,49 +1,43 @@
 App.Views.AppView = Backbone.View.extend({
     initialize: function() {
-        var taskView = new App.Views.Tasks({ collection: this.collection });
-        $('#tasks').html(taskView.render().el);
-        var x = new App.Views.TaskInput({ collection: this.collection });
+        new App.Views.TaskInput();
         
+        tasks = new App.Collections.Tasks();
         var categories = new App.Collections.Categories([{'name': 'All', 'alias': 'all'}, {'name': 'Completed', 'alias': 'completed'}, {'name': 'Incomplete', 'alias': 'incomplete'}]);
         var taskCategories = new App.Views.TaskCategories({ collection: categories });
-        //$("#categories").html(taskCategories.render().el);
         taskCategories.render().el;
-    }
-});
-
-App.Views.TaskCategories = Backbone.View.extend({
-    el: '.btn-group',
-            
-    initialize: function() {
-      this.$el.html("");  
+        
+        vent.on('category:selected', this.viewForCategory, this);
+        vent.on('create:model', this.addModel, this);
     },
             
-    render: function() {
-        this.collection.each(this.addOne, this);
-        return this;
+    viewForCategory: function(cat) {
+        $("#newTaskInput").focus();
+        
+        if (cat === 'completed'){
+            tasks.url = 'todo/1';
+            tasks.fetch().then(function (){
+                var taskView = new App.Views.Tasks({ collection: tasks });
+                $('#tasks').html(taskView.render().el);
+            });
+        }else if (cat === 'incomplete'){
+            tasks.url = 'todo/0';
+            tasks.fetch().then(function (){
+                var taskView = new App.Views.Tasks({ collection: tasks });
+                $('#tasks').html(taskView.render().el);
+            });
+        }else {
+            tasks.url = 'todo/all';
+            tasks.fetch().then(function (){
+                var taskView = new App.Views.Tasks({ collection: tasks });
+                $('#tasks').html(taskView.render().el);
+            });
+        }
     },
             
-    addOne: function(model) {
-        var category = new App.Views.TaskCategory({ model: model });
-        this.$el.append(category.render().el);
-    }
-});
-
-App.Views.TaskCategory = Backbone.View.extend({
-    className: 'btn',
-            
-    render: function() {
-        this.$el.text(this.model.get('name'));
-        return this;
-    },
-            
-    events: {
-        click: 'categorySelected'
-    },
-            
-    categorySelected: function() {
-        appRouter.navigate('taskList/'+this.model.get('alias'), { trigger: true });
-        console.log(this.model.get('alias'));
+    addModel: function(newModel) {
+        tasks.create(newModel);
+        appRouter.navigate('taskList/incomplete', { trigger: true });
     }
 });
 
@@ -127,9 +121,46 @@ App.Views.Task = Backbone.View.extend({
             this.model.save();
             this.$('.check').attr('class', 'icon-star check');
             this.$el.attr('class', 'taskItem span5 strikethrough');
+            
+        //appRouter.navigate('taskList/incomplete', { trigger: true });
         }
     }
     
+});
+
+App.Views.TaskCategories = Backbone.View.extend({
+    el: '.btn-group',
+            
+    initialize: function() {
+      this.$el.html("");  
+    },
+            
+    render: function() {
+        this.collection.each(this.addOne, this);
+        return this;
+    },
+            
+    addOne: function(model) {
+        var category = new App.Views.TaskCategory({ model: model });
+        this.$el.append(category.render().el);
+    }
+});
+
+App.Views.TaskCategory = Backbone.View.extend({
+    className: 'btn',
+            
+    render: function() {
+        this.$el.text(this.model.get('name'));
+        return this;
+    },
+            
+    events: {
+        click: 'categorySelected'
+    },
+            
+    categorySelected: function() {
+        appRouter.navigate('taskList/'+this.model.get('alias'), { trigger: true });
+    }
 });
 
 App.Views.TaskInput = Backbone.View.extend({
@@ -147,11 +178,11 @@ App.Views.TaskInput = Backbone.View.extend({
     },
            
     keypressed: function(e) {
-        
         if(e.keyCode === 13){
             e.preventDefault();
-            this.collection.create(this.readTask());
-            this.$("#newTaskInput").val('')
+            vent.trigger('create:model', this.readTask());
+            this.$("#newTaskInput").val('');
+            this.$("#newTaskInput").focus();
         }
         
     }
